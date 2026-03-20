@@ -7,9 +7,6 @@ class MacCleans < Formula
 
   def install
     bin.install "clean-mac-space.sh" => "mac-cleans"
-    bash_completion.install "completions/mac-cleans.bash"
-    zsh_completion.install "completions/_mac-cleans"
-    fish_install Completions: "completions/mac-cleans.fish"
   end
 
   test do
