@@ -9,7 +9,7 @@ class MacCleans < Formula
     bin.install "clean-mac-space.sh" => "mac-cleans"
     bash_completion.install "completions/mac-cleans.bash"
     zsh_completion.install "completions/_mac-cleans"
-    fish_install Completions: "completions/mac-cleans.fish"
+    (prefix/"fish/completions").install "completions/mac-cleans.fish" if File.exist? "completions/mac-cleans.fish"
   end
 
   test do
