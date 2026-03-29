@@ -1,8 +1,8 @@
 class MacCleans < Formula
   desc "macOS disk cleanup utility - free 10-50GB"
   homepage "https://github.com/Carme99/MacCleans.sh"
-  url "https://github.com/Carme99/MacCleans.sh/archive/refs/tags/v5.1.5.tar.gz"
-  sha256 "b1bfea17727eceec9a44b13f7f84c65095e2d3e8348da29906b8249de76c771e"
+  url "https://github.com/Carme99/MacCleans.sh/archive/refs/tags/v5.1.6.tar.gz"
+  sha256 "e1fbd2879a8cbc8caf6cbce7e7cef6b65c32bc65732b61895cceda031337fcd4"
   license "MIT"
 
   def install
