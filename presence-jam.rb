@@ -6,34 +6,21 @@ class PresenceJam < Formula
   version "2.7.1"
   license "MIT"
 
-  # Tauri-built macOS DMG. The HFS+ volume layout has been inconsistent
-  # across releases and brew versions — verified that the actual mounted
-  # HFS+ root on a Linux-mountable test image contains PresenceJam.app/
-  # directly (no subfolder), but the original `prefix.install "PresenceJam.app"`
-  # still produced Errno::ENOENT for Jack's brew install on v2.7.1.
+  # Tauri-built macOS DMG. brew mounts the DMG and then cd's INTO the
+  # .app bundle, setting buildpath = the .app bundle itself (e.g.
+  # /private/tmp/presence-jam-XXXXXXXX-XXXXX/PresenceJam.app/).
+  # The .app's contents (Contents/MacOS, Contents/Resources,
+  # Contents/Info.plist) sit directly at buildpath.
   #
-  # The fix below probes for the .app at both the documented layouts
-  # (root and one-level-deep subfolder), using absolute paths from
-  # `buildpath` to be cwd-independent. The `odie` line gives a clear
-  # diagnostic if neither layout is found, listing the actual buildpath
-  # contents so we can adjust.
+  # Diagnosed by adding diagnostic output on v2.7.1: brew reported
+  # buildpath contents as just "Contents/". The original formula
+  # tried `prefix.install "PresenceJam.app"` which would have looked
+  # for buildpath/PresenceJam.app — i.e. inside the bundle.
+  # Unsurprisingly, ENOENT. The fix is to install the entire
+  # buildpath (the .app bundle itself) into the keg.
 
   def install
-    candidates = [
-      buildpath/"PresenceJam.app",
-      buildpath/"PresenceJam/PresenceJam.app",
-    ]
-    app_path = candidates.find(&:directory?)
-    unless app_path
-      odie <<~EOS
-        PresenceJam.app not found at #{buildpath}.
-        Buildpath contents:
-        #{Dir.glob("#{buildpath}/*").map { |p| "  #{p}" }.join("\n")}
-        Expected one of:
-          #{candidates.join("\n          ")}
-      EOS
-    end
-    prefix.install app_path
+    prefix.install buildpath
   end
 
   test do
