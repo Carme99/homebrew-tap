@@ -6,26 +6,34 @@ class PresenceJam < Formula
   version "2.7.1"
   license "MIT"
 
-  # Tauri-built macOS DMG. The Tauri 2.x bundler wraps the .app bundle
-  # in an outer `PresenceJam/` subfolder (along with an `Applications`
-  # symlink for the drag-to-install UX), so the mount-root layout is:
+  # Tauri-built macOS DMG. The HFS+ volume layout has been inconsistent
+  # across releases and brew versions — verified that the actual mounted
+  # HFS+ root on a Linux-mountable test image contains PresenceJam.app/
+  # directly (no subfolder), but the original `prefix.install "PresenceJam.app"`
+  # still produced Errno::ENOENT for Jack's brew install on v2.7.1.
   #
-  #   /Volumes/PresenceJam/         (the volume, --volname PresenceJam)
-  #     PresenceJam/                (outer subfolder, Tauri bundler quirk)
-  #       PresenceJam.app/          ← what we want
-  #       Applications              (symlink to /Applications)
-  #
-  # Verified by extracting the v2.7.1 DMG with 7z — the .app is one
-  # level deeper than the original formula expected. The original
-  # `prefix.install "PresenceJam.app"` failed with `Errno::ENOENT`
-  # because it was looking at the buildpath root, not the subfolder.
-  # This latent bug has existed since the formula was first added in
-  # #58 (v2.6.0 era). Same issue applies to all earlier versions
-  # (v2.6.0 - v2.7.1) — the formula was never tested via actual
-  # brew install until Jack tried v2.7.1.
+  # The fix below probes for the .app at both the documented layouts
+  # (root and one-level-deep subfolder), using absolute paths from
+  # `buildpath` to be cwd-independent. The `odie` line gives a clear
+  # diagnostic if neither layout is found, listing the actual buildpath
+  # contents so we can adjust.
 
   def install
-    prefix.install "PresenceJam/PresenceJam.app"
+    candidates = [
+      buildpath/"PresenceJam.app",
+      buildpath/"PresenceJam/PresenceJam.app",
+    ]
+    app_path = candidates.find(&:directory?)
+    unless app_path
+      odie <<~EOS
+        PresenceJam.app not found at #{buildpath}.
+        Buildpath contents:
+        #{Dir.glob("#{buildpath}/*").map { |p| "  #{p}" }.join("\n")}
+        Expected one of:
+          #{candidates.join("\n          ")}
+      EOS
+    end
+    prefix.install app_path
   end
 
   test do
