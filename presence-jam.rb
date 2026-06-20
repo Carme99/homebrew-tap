@@ -1,9 +1,9 @@
 class PresenceJam < Formula
   desc "Spotify to Teams Status Sync"
   homepage "https://github.com/Carme99/PresenceJam-Desktop"
-  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v2.7.1/PresenceJam-macos.dmg"
-  sha256 "f18937350e592385d56529568a8a94fbcb346d743601a8eb9344e2867cbfe014"
-  version "2.7.1"
+  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v2.7.2/PresenceJam-macos.dmg"
+  sha256 "ac2c2a9f10abc640e6c9416f5def2376513884dfdb800043aa742ea624c0c5e6"
+  version "2.7.2"
   license "MIT"
 
   # Tauri-built macOS DMG. brew mounts the DMG, extracts the .app
@@ -12,20 +12,13 @@ class PresenceJam < Formula
   # bundle's contents (Contents/MacOS, Contents/Resources,
   # Contents/Info.plist) sitting directly at buildpath.
   #
-  # The install block must therefore copy the buildpath (the .app
-  # bundle) into the keg as prefix/PresenceJam.app.
-  #
   # Earlier attempts:
-  #   - prefix.install "PresenceJam.app"           → buildpath/PresenceJam.app doesn't exist
-  #   - prefix.install "PresenceJam/PresenceJam.app" → same reason
-  #   - prefix.install buildpath                   → Errno::ENOENT @ dir_initialize
-  #     on the buildpath. The buildpath IS supposed to be openable
-  #     as a dir (it's the .app bundle), but Ruby's Pathname#install
-  #     fails. Falling back to FileUtils.cp_r with explicit string
-  #     paths which avoids Pathname's odd behaviour here.
-  #
-  # See commit 531c6da for the diagnostic that revealed the layout
-  # and commit 0d289a1 (this fix) for the final form.
+  #   - prefix.install "PresenceJam.app"             → buildpath/PresenceJam.app doesn't exist
+  #   - prefix.install "PresenceJam/PresenceJam.app"  → same reason
+  #   - prefix.install buildpath                      → Errno::ENOENT @ dir_initialize
+  # Final form: FileUtils.cp_r with explicit string paths. Verifies
+  # buildpath exists first so a clear error surfaces if the layout
+  # ever changes. See carme99/homebrew-tap commit 71777f3.
 
   def install
     raise "buildpath not set" unless buildpath
