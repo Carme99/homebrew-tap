@@ -1,10 +1,17 @@
 class PresenceJam < Formula
   desc "Spotify to Teams Status Sync"
   homepage "https://github.com/Carme99/PresenceJam-Desktop"
-  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v4.5.2/PresenceJam-macos.dmg"
-  sha256 "1f745e71fae99ce694bb7810ab6f9ba74c06ee0bda143ff991bea1d6460105c3"
-  version "4.5.2"
+  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v4.6.0/PresenceJam-macos.dmg"
+  sha256 "3acea1b060dc5807929c71b9731ce41f12fed99175967e134151dddf2e109e3c"
+  version "4.6.0"
   license "MIT"
+
+  # The release matrix builds only aarch64-apple-darwin and latest.json
+  # advertises only darwin-aarch64 (see .github/workflows/release.yml), so
+  # an Intel Mac can neither launch the DMG's arm64 .app nor ever self-heal
+  # through the updater. Refuse the install instead of copying a bundle
+  # that cannot run. See issue #610.
+  depends_on arch: :arm64
 
   # Tauri-built macOS DMG. brew mounts the DMG, extracts the .app
   # bundle to a temp dir, and chdirs INTO the .app — so the
