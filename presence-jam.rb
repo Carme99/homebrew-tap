@@ -2,7 +2,7 @@ class PresenceJam < Formula
   desc "Spotify to Teams Status Sync"
   homepage "https://github.com/Carme99/PresenceJam-Desktop"
   url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v4.5.1/PresenceJam-macos.dmg"
-  sha256 "77876f9f7d1cc3799d3effbebeed23358f268b419966accba42374b2ce962480"
+  sha256 "802d5a4249943d64f6f22f61ba70fd65eb89233b227dc51447f4d470481d3c75"
   version "4.5.1"
   license "MIT"
 
