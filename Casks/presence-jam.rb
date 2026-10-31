@@ -22,10 +22,10 @@
 # is ambiguous. An autostart entry created while the app ran from the Cellar
 # points at that old path and has to be re-created (Settings -> Start at login).
 cask "presence-jam" do
-  version "5.0.0"
-  sha256 "5605ea52d0bac876cd6132d392f28742fae73122895fe4dddb5ae9895f678d16"
+  version "5.0.1"
+  sha256 "ba69bb3bf6082b2acd4e1f54c5164adb9e1549c3876550adefa93daba80e0dea"
 
-  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v5.0.0/PresenceJam-macos.dmg"
+  url "https://github.com/Carme99/PresenceJam-Desktop/releases/download/v5.0.1/PresenceJam-macos.dmg"
   name "PresenceJam"
   desc "Syncs Spotify playback to your Microsoft Teams status"
   homepage "https://github.com/Carme99/PresenceJam-Desktop"
